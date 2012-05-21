@@ -20,7 +20,6 @@ Requires:	tokyocabinet
 %description
 A high performance inline data deduplicating filesystem for Linux.
 
-
 %prep
 %setup -q
 
@@ -28,7 +27,6 @@ A high performance inline data deduplicating filesystem for Linux.
 %build
 %configure
 make %{?_smp_mflags}
-
 
 %install
 rm -rf $RPM_BUILD_ROOT

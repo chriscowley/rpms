@@ -57,6 +57,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Mon May 21 2012 Chris Cowley <chris@chriscowley.me.uk> - 1.5.12-1
-- Updated to 1.5.12-1
+- Updated to 1.5.12-1 and also now in git
 * Fri Oct 7 2011 Chris Cowley <chris@chriscowley.me.uk> - 1.5.8-1
 - 1st release

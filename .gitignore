@@ -1,1 +1,5 @@
-SOURCE/lessfs-1.5.12.tar.gz
+SOURCES/*.tar.gz
+SOURCES/*.tar.bz2
+BUILD/
+RPMS/
+SRPMS/

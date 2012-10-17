@@ -1,0 +1,15 @@
+[chriscowley]
+name=Chris Cowley's Packages for Enterprise Linux 6 - $basearch
+baseurl=http://yum.chriscowley.me.uk/el/6/$basearch
+failovermethod=priority
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ChrisCowley
+
+[chriscowley-test]
+name=Chris Cowley's Test Packages for Enterprise Linux 6 - $basearch
+baseurl=http://yum.chriscowley.me.uk/test/el/6/$basearch
+failovermethod=priority
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ChrisCowley

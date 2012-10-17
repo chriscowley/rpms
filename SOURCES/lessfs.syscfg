@@ -1,0 +1,3 @@
+MKLESSFS=/sbin/mklessfs
+MOUNTPOINT=/lessfs
+CFG=/etc/lessfs.cfg

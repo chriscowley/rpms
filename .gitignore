@@ -3,3 +3,4 @@ SOURCES/*.tar.bz2
 BUILD/
 RPMS/
 SRPMS/
+*.swp

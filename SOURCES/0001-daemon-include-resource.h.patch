@@ -1,0 +1,27 @@
+From 9f47804b2e8a0bc822b038427562d3a481c28693 Mon Sep 17 00:00:00 2001
+From: David Teigland <teigland@redhat.com>
+Date: Mon, 23 Jul 2012 10:58:50 -0500
+Subject: [PATCH 1/2] daemon: include resource.h
+
+for rlimits
+
+Signed-off-by: David Teigland <teigland@redhat.com>
+---
+ src/main.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/src/main.c b/src/main.c
+index d5f4d04..fdf068d 100644
+--- a/src/main.c
++++ b/src/main.c
+@@ -32,6 +32,7 @@
+ #include <sys/mman.h>
+ #include <sys/mman.h>
+ #include <sys/utsname.h>
++#include <sys/resource.h>
+ #include <uuid/uuid.h>
+ 
+ #define EXTERN
+-- 
+1.7.10.1.362.g242cab3
+

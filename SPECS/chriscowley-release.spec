@@ -1,41 +1,19 @@
-%define is_fedora %(test -e /etc/fedora-release && echo 1 || echo 0)
-%define is_el %(test -e /etc/redhat-release && echo 1 || echo 0)
-%if %is_fedora
-%define distribution Fedora
-%endif
-%if %is_el
-%define distribution EL
-%endif
-
 Name:           chriscowley-release       
-Version:        1
-Release:        2
+Version:        0
+Release:        1
 Summary:        Chris Cowley's packages for Enterprise Linux repository configuration
-
 Group:          System Environment/Base 
 License:        GPLv2
 
-# This is a Red Hat maintained package which is specific to
-# our distribution.  Thus the source is only available from
-# within this srpm.
 URL:            http://yum.chriscowley.me.uk
 Source0:        http://yum.chriscowley.me.uk/RPM-GPG-KEY-ChrisCowley
 Source1:        GPL	
-%if  "%{distribution}" == "EL"
-Source2:        chriscowley.repo.el	
-%endif
-%if  "%{distribution}" == "Fedora"
-Source2:        chriscowley.repo.fedora
-%endif
-#Source3:        epel-testing.repo	
+Source2:        chriscowley.repo
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:     noarch
-%if  "%{distribution}" == "EL"
-Requires:      redhat-release >=  %{version} 
-Conflicts:     fedora-release
-%endif
+Requires:     fedora-release
 
 %if "%{distribution}" == "Fedora"
 Requires:      fedora-release
@@ -43,7 +21,7 @@ Requires:      fedora-release
 
 %description
 This package contains the the Chris Cowley repository
-GPG key as well as configuration for yum and up2date.
+GPG key as well as configuration for Yum
 
 %prep
 %setup -q  -c -T
@@ -68,15 +46,8 @@ install -pm 644 %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/yum.repos.d
 rm -rf $RPM_BUILD_ROOT
 
 %post
-# Not needed for el6 as sources has been removed
-#echo "# epel repo -- added by epel-release " \
-#    >> %{_sysconfdir}/sysconfig/rhn/sources
-#echo "yum epel http://download.fedora.redhat.com/pub/epel/%{version}/\$ARCH" \
-#    >> %{_sysconfdir}/sysconfig/rhn/sources
 
 %postun 
-#sed -i '/^yum\ epel/d' %{_sysconfdir}/sysconfig/rhn/sources
-#sed -i '/^\#\ epel\ repo\ /d' %{_sysconfdir}/sysconfig/rhn/sources
 
 
 %files
@@ -87,9 +58,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-* Sun Oct 23 2011 Chris Cowley <chris@chriscowley.me.uk> - 1-2
-- Added test repository
 
-* Sun Oct 23 2011 Chris Cowley <chris@chriscowley.me.uk> - 1-1
+* Wed Oct 17 2012 Chris Cowley <chris@chriscowley.me.uk> - 0.1
 - Initial build
 

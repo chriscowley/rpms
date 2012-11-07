@@ -1,14 +1,22 @@
 [chriscowley]
-name=Chris Cowley's Packages for Enterprise Linux 6 - $basearch
-baseurl=http://yum.chriscowley.me.uk/el/6/$basearch
+name=Chris Cowley's Packages for Fedora Linux $releasever - $basearch
+baseurl=http://yum.chriscowley.me.uk/fedora/$releasever/$basearch
 failovermethod=priority
 enabled=1
 gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ChrisCowley
 
 [chriscowley-test]
-name=Chris Cowley's Test Packages for Enterprise Linux 6 - $basearch
-baseurl=http://yum.chriscowley.me.uk/test/el/6/$basearch
+name=Chris Cowley's Test Packages for Fedora Linux $releasever - $basearch
+baseurl=http://yum.chriscowley.me.uk/test/fedora/$releasever/$basearch
+failovermethod=priority
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-ChrisCowley
+
+[chriscowley-rawhide]
+name=Chris Cowley's Test Packages for Fedora Linux Rawhide - $basearch
+baseurl=http://yum.chriscowley.me.uk/fedora/rawhide/$basearch
 failovermethod=priority
 enabled=0
 gpgcheck=1

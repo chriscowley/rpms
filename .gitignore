@@ -1,3 +1,4 @@
+BUILDROOT/
 SOURCES/*.tar.gz
 SOURCES/*.tar.bz2
 BUILD/

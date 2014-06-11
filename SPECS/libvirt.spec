@@ -80,7 +80,7 @@
 %if 0%{?fedora} >= 16
 %define with_storage_rbd      0%{!?_without_storage_rbd:%{server_drivers}}
 %else
-%define with_storage_rbd      0
+%define with_storage_rbd      1
 %endif
 %if 0%{?fedora} >= 17
 %define with_storage_sheepdog 0%{!?_without_storage_sheepdog:%{server_drivers}}
@@ -249,7 +249,7 @@
 %define with_storage_lvm 0
 %define with_storage_iscsi 0
 %define with_storage_mpath 0
-%define with_storage_rbd 0
+%define with_storage_rbd 1
 %define with_storage_sheepdog 0
 %define with_storage_disk 0
 %endif
@@ -321,7 +321,7 @@
 
 Summary: Library providing a simple virtualization API
 Name: libvirt
-Version: 1.0.0
+Version: 1.2.3
 Release: 1%{?dist}%{?extra_release}
 License: LGPLv2+
 Group: Development/Libraries
@@ -1314,7 +1314,8 @@ gzip -9 ChangeLog
 rm -fr %{buildroot}
 
 %makeinstall SYSTEMD_UNIT_DIR=%{buildroot}%{_unitdir}
-for i in domain-events/events-c dominfo domsuspend hellolibvirt openauth python xml/nwfilter systemtap
+#for i in domain-events/events-c dominfo domsuspend hellolibvirt openauth python xml/nwfilter systemtap
+for i in dominfo domsuspend hellolibvirt openauth xml/nwfilter systemtap
 do
   (cd examples/$i ; make clean ; rm -rf .deps .libs Makefile Makefile.in)
 done
@@ -1899,7 +1900,7 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/sysctl.d/libvirtd
 %doc docs/*.html docs/html docs/*.gif
 %doc docs/libvirt-api.xml
 %doc examples/hellolibvirt
-%doc examples/domain-events/events-c
+#%doc examples/domain-events/events-c
 %doc examples/dominfo
 %doc examples/domsuspend
 %doc examples/openauth
@@ -1921,6 +1922,10 @@ rm -f $RPM_BUILD_ROOT%{_sysconfdir}/sysctl.d/libvirtd
 %endif
 
 %changelog
+* Mon Apr 28 2014 Chris Cowley <chris@chriscowley.me.uk> - 1.2.3-1
+- Build for version 1.2.3 from upstream
+- Enable Ceph RBD support
+
 * Fri Nov  2 2012 Daniel Veillard <veillard@redhat.com> - 1.0.0-1
 - virNodeGetCPUMap: Define public API
 - Add systemd journal support

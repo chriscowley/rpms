@@ -1,0 +1,162 @@
+diff -up graphite-web-0.9.12/conf/graphite.wsgi.example.orig graphite-web-0.9.12/conf/graphite.wsgi.example
+--- graphite-web-0.9.12/conf/graphite.wsgi.example.orig	2013-09-02 14:26:45.271263144 -0600
++++ graphite-web-0.9.12/conf/graphite.wsgi.example	2013-09-02 14:27:04.822202440 -0600
+@@ -1,5 +1,5 @@
+ import os, sys
+-sys.path.append('/opt/graphite/webapp')
++sys.path.append('/usr/share/graphite/webapp')
+ os.environ['DJANGO_SETTINGS_MODULE'] = 'graphite.settings'
+ 
+ import django.core.handlers.wsgi
+diff -up graphite-web-0.9.12/MANIFEST.in.orig graphite-web-0.9.12/MANIFEST.in
+--- graphite-web-0.9.12/MANIFEST.in.orig	2013-09-02 14:40:01.565458329 -0600
++++ graphite-web-0.9.12/MANIFEST.in	2013-09-02 14:40:07.233438016 -0600
+@@ -5,7 +5,6 @@ include check-dependencies.py
+ include examples/*
+ include conf/*.example
+ include webapp/graphite/local_settings.py.example
+-include webapp/graphite/thirdparty/pytz/pytz-LICENSE.txt
+ recursive-include distro/ *
+ recursive-include webapp/graphite/ *.html
+ recursive-include webapp/content/ *
+diff -up graphite-web-0.9.12/setup.cfg.orig graphite-web-0.9.12/setup.cfg
+--- graphite-web-0.9.12/setup.cfg.orig	2013-09-02 14:30:19.882530340 -0600
++++ graphite-web-0.9.12/setup.cfg	2013-09-02 14:30:01.926593529 -0600
+@@ -1,6 +1,7 @@
+ [install]
+-prefix = /opt/graphite
+-install-lib = %(prefix)s/webapp
++#prefix = /opt/graphite
++#install-lib = %(prefix)s/webapp
++install-data = /usr/share/graphite
+ 
+ [bdist_rpm]
+ requires = Django => 1.1.4
+diff -up graphite-web-0.9.12/setup.py.orig graphite-web-0.9.12/setup.py
+--- graphite-web-0.9.12/setup.py.orig	2013-09-02 14:31:35.589263647 -0600
++++ graphite-web-0.9.12/setup.py	2013-09-02 14:42:55.155763787 -0600
+@@ -54,12 +54,11 @@ setup(
+     'graphite.graphlot',
+     'graphite.events',
+     'graphite.version',
+-    'graphite.thirdparty',
+-    'graphite.thirdparty.pytz',
+   ],
+   package_data={'graphite' :
+     ['templates/*', 'local_settings.py.example']},
+   scripts=glob('bin/*'),
+-  data_files=webapp_content.items() + storage_dirs + conf_files + examples,
++  #data_files=webapp_content.items() + storage_dirs + conf_files + examples,
++  data_files=webapp_content.items(),
+   **setup_kwargs
+ )
+diff -up graphite-web-0.9.12/webapp/graphite/cli/parser.py.orig graphite-web-0.9.12/webapp/graphite/cli/parser.py
+--- graphite-web-0.9.12/webapp/graphite/cli/parser.py.orig	2013-09-02 14:33:15.401909071 -0600
++++ graphite-web-0.9.12/webapp/graphite/cli/parser.py	2013-09-02 14:40:38.909323546 -0600
+@@ -12,7 +12,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ See the License for the specific language governing permissions and
+ limitations under the License."""
+ 
+-from graphite.thirdparty.pyparsing import *
++from pyparsing import *
+ 
+ grammar = Forward()
+ 
+diff -up graphite-web-0.9.12/webapp/graphite/local_settings.py.example.orig graphite-web-0.9.12/webapp/graphite/local_settings.py.example
+--- graphite-web-0.9.12/webapp/graphite/local_settings.py.example.orig	2013-09-02 14:33:38.931825213 -0600
++++ graphite-web-0.9.12/webapp/graphite/local_settings.py.example	2013-09-02 14:36:01.741315717 -0600
+@@ -55,6 +55,7 @@
+ # Change only GRAPHITE_ROOT if your install is merely shifted from /opt/graphite
+ # to somewhere else
+ #GRAPHITE_ROOT = '/opt/graphite'
++GRAPHITE_ROOT = '/usr/share/graphite'
+ 
+ # Most installs done outside of a separate tree such as /opt/graphite will only
+ # need to change these three settings. Note that the default settings for each
+@@ -62,13 +63,16 @@
+ #CONF_DIR = '/opt/graphite/conf'
+ #STORAGE_DIR = '/opt/graphite/storage'
+ #CONTENT_DIR = '/opt/graphite/webapp/content'
++CONF_DIR = '/etc/graphite-web'
++STORAGE_DIR = '/var/lib/graphite-web'
++CONTENT_DIR = '/usr/share/graphite/webapp/content'
+ 
+ # To further or fully customize the paths, modify the following. Note that the
+ # default settings for each of these are relative to CONF_DIR and STORAGE_DIR
+ #
+ ## Webapp config files
+-#DASHBOARD_CONF = '/opt/graphite/conf/dashboard.conf'
+-#GRAPHTEMPLATES_CONF = '/opt/graphite/conf/graphTemplates.conf'
++#DASHBOARD_CONF = '/etc/graphite-web/dashboard.conf'
++#GRAPHTEMPLATES_CONF = '/etc/graphite-web/graphTemplates.conf'
+ 
+ ## Data directories
+ # NOTE: If any directory is unreadable in DATA_DIRS it will break metric browsing
+@@ -77,6 +81,11 @@
+ #DATA_DIRS = [WHISPER_DIR, RRD_DIR] # Default: set from the above variables
+ #LOG_DIR = '/opt/graphite/storage/log/webapp'
+ #INDEX_FILE = '/opt/graphite/storage/index'  # Search index file
++WHISPER_DIR = '/var/lib/carbon/whisper/'
++RRD_DIR = '/var/lib/carbon/rrd'
++DATA_DIRS = [WHISPER_DIR, RRD_DIR] # Default: set from the above variables
++LOG_DIR = '/var/log/graphite-web/'
++INDEX_FILE = '/var/lib/graphite-web/index'  # Search index file
+ 
+ 
+ #####################################
+diff -up graphite-web-0.9.12/webapp/graphite/render/attime.py.orig graphite-web-0.9.12/webapp/graphite/render/attime.py
+--- graphite-web-0.9.12/webapp/graphite/render/attime.py.orig	2013-09-02 14:36:53.658130292 -0600
++++ graphite-web-0.9.12/webapp/graphite/render/attime.py	2013-09-02 14:37:01.574102029 -0600
+@@ -16,11 +16,7 @@ from datetime import datetime,timedelta
+ from time import daylight
+ from django.conf import settings
+ 
+-try: # See if there is a system installation of pytz first
+-  import pytz
+-except ImportError: # Otherwise we fall back to Graphite's bundled version
+-  from graphite.thirdparty import pytz
+-
++import pytz
+ 
+ months = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']
+ weekdays = ['sun','mon','tue','wed','thu','fri','sat']
+diff -up graphite-web-0.9.12/webapp/graphite/render/glyph.py.orig graphite-web-0.9.12/webapp/graphite/render/glyph.py
+--- graphite-web-0.9.12/webapp/graphite/render/glyph.py.orig	2013-09-02 14:37:20.862033093 -0600
++++ graphite-web-0.9.12/webapp/graphite/render/glyph.py	2013-09-02 14:37:30.936997088 -0600
+@@ -21,11 +21,7 @@ from django.conf import settings
+ from graphite.render.datalib import TimeSeries
+ from graphite.util import json
+ 
+-
+-try: # See if there is a system installation of pytz first
+-  import pytz
+-except ImportError: # Otherwise we fall back to Graphite's bundled version
+-  from graphite.thirdparty import pytz
++import pytz
+ 
+ INFINITY = float('inf')
+ 
+diff -up graphite-web-0.9.12/webapp/graphite/render/grammar.py.orig graphite-web-0.9.12/webapp/graphite/render/grammar.py
+--- graphite-web-0.9.12/webapp/graphite/render/grammar.py.orig	2013-09-02 14:37:45.446945226 -0600
++++ graphite-web-0.9.12/webapp/graphite/render/grammar.py	2013-09-02 14:37:58.000900348 -0600
+@@ -1,4 +1,4 @@
+-from graphite.thirdparty.pyparsing import *
++from pyparsing import *
+ 
+ ParserElement.enablePackrat()
+ grammar = Forward()
+diff -up graphite-web-0.9.12/webapp/graphite/render/views.py.orig graphite-web-0.9.12/webapp/graphite/render/views.py
+--- graphite-web-0.9.12/webapp/graphite/render/views.py.orig	2013-09-02 14:42:30.651864304 -0600
++++ graphite-web-0.9.12/webapp/graphite/render/views.py	2013-09-02 14:40:52.368268126 -0600
+@@ -25,10 +25,7 @@ try:
+ except ImportError:
+   import pickle
+ 
+-try:  # See if there is a system installation of pytz first
+-  import pytz
+-except ImportError:  # Otherwise we fall back to Graphite's bundled version
+-  from graphite.thirdparty import pytz
++import pytz
+ 
+ from graphite.util import getProfileByUsername, json, unpickle
+ from graphite.remote_storage import HTTPConnectionWithTimeout

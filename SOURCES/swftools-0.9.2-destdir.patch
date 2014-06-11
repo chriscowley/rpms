@@ -1,0 +1,77 @@
+diff -ru swftools-0.9.2-orig/Makefile.common.in swftools-0.9.2/Makefile.common.in
+--- swftools-0.9.2-orig/Makefile.common.in	2010-11-12 20:06:53.000000000 +0100
++++ swftools-0.9.2/Makefile.common.in	2014-05-08 19:22:35.959000000 +0200
+@@ -69,9 +69,9 @@
+ 
+ # ------------------- defines -------------------------
+ 
+-INSTALL_BIN = echo installing $$file to $(bindir);$(INSTALL_PROGRAM) $$file $(bindir)/`echo $$file|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`
++INSTALL_BIN = echo installing $$file to $(DESTDIR)$(bindir);$(INSTALL_PROGRAM) $$file $(DESTDIR)$(bindir)/`echo $$file|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`
+ UNINSTALL_BIN = ff=`echo $$file|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`;echo rm -f $(bindir)/$$ff;rm -f $(bindir)/$$ff
+-INSTALL_MAN1 = ff=$(srcdir)/$$file.1; inst=`echo $$file | sed '$(transform)'`.1; echo "$(INSTALL_DATA) $$ff $(man1dir)/$$inst"; $(INSTALL_DATA) $$ff $(man1dir)/$$inst
++INSTALL_MAN1 = ff=$(srcdir)/$$file.1; inst=`echo $$file | sed '$(transform)'`.1; echo "$(INSTALL_DATA) $$ff $(DESTDIR)$(man1dir)/$$inst"; $(INSTALL_DATA) $$ff $(DESTDIR)$(man1dir)/$$inst
+ UNINSTALL_MAN1 = ff=$(srcdir)/$$file.1; inst=`echo $$file | sed '$(transform)'`.1; echo "rm -f $(man1dir)/$$inst"; rm -f $(man1dir)/$$inst
+ 
+ #%.o: %.c
+diff -ru swftools-0.9.2-orig/src/Makefile.in swftools-0.9.2/src/Makefile.in
+--- swftools-0.9.2-orig/src/Makefile.in	2011-10-07 05:20:17.000000000 +0200
++++ swftools-0.9.2/src/Makefile.in	2014-05-08 19:22:34.672000000 +0200
+@@ -134,8 +134,8 @@
+ 	$(STRIP) $@
+ 
+ install:
+-	$(mkinstalldirs) $(bindir)
+-	$(mkinstalldirs) $(man1dir)
++	$(mkinstalldirs) $(DESTDIR)$(bindir)
++	$(mkinstalldirs) $(DESTDIR)$(man1dir)
+ 	@for file in $(install_programs); do if test -f $$file;then $(INSTALL_BIN);$(INSTALL_MAN1);fi;done
+ 	
+ uninstall:
+diff -ru swftools-0.9.2-orig/swfs/Makefile.in swftools-0.9.2/swfs/Makefile.in
+--- swftools-0.9.2-orig/swfs/Makefile.in	2012-04-08 19:25:26.000000000 +0200
++++ swftools-0.9.2/swfs/Makefile.in	2014-05-08 19:25:59.223000000 +0200
+@@ -34,26 +34,26 @@
+ 	./PreLoaderTemplate$(E) || true
+ 
+ install:
+-	$(mkinstalldirs) $(pkgdatadir)
+-	$(mkinstalldirs) $(pkgdatadir)/swfs
+-	$(INSTALL_DATA) ./simple_viewer.swf $(pkgdatadir)/swfs/simple_viewer.swf
+-	$(INSTALL_DATA) ./keyboard_viewer.swf $(pkgdatadir)/swfs/keyboard_viewer.swf
+-	$(INSTALL_DATA) ./PreLoaderTemplate.swf $(pkgdatadir)/swfs/PreLoaderTemplate.swf
+-	$(INSTALL_DATA) ./tessel_loader.swf $(pkgdatadir)/swfs/tessel_loader.swf
+-	$(INSTALL_DATA) ./swft_loader.swf $(pkgdatadir)/swfs/swft_loader.swf
+-	rm -f $(pkgdatadir)/swfs/default_viewer.swf -o -L $(pkgdatadir)/swfs/default_viewer.swf
+-	$(LN_S) $(pkgdatadir)/swfs/simple_viewer.swf $(pkgdatadir)/swfs/default_viewer.swf
+-	rm -f $(pkgdatadir)/swfs/default_loader.swf -o -L $(pkgdatadir)/swfs/default_loader.swf
+-	$(LN_S) $(pkgdatadir)/swfs/tessel_loader.swf $(pkgdatadir)/swfs/default_loader.swf
++	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)
++	$(mkinstalldirs) $(DESTDIR)$(pkgdatadir)/swfs
++	$(INSTALL_DATA) ./simple_viewer.swf $(DESTDIR)$(pkgdatadir)/swfs/simple_viewer.swf
++	$(INSTALL_DATA) ./keyboard_viewer.swf $(DESTDIR)$(pkgdatadir)/swfs/keyboard_viewer.swf
++	$(INSTALL_DATA) ./PreLoaderTemplate.swf $(DESTDIR)$(pkgdatadir)/swfs/PreLoaderTemplate.swf
++	$(INSTALL_DATA) ./tessel_loader.swf $(DESTDIR)$(pkgdatadir)/swfs/tessel_loader.swf
++	$(INSTALL_DATA) ./swft_loader.swf $(DESTDIR)$(pkgdatadir)/swfs/swft_loader.swf
++	rm -f $(DESTDIR)$(pkgdatadir)/swfs/default_viewer.swf -o -L $(DESTDIR)$(pkgdatadir)/swfs/default_viewer.swf
++	$(LN_S) $(DESTDIR)$(pkgdatadir)/swfs/simple_viewer.swf $(DESTDIR)$(pkgdatadir)/swfs/default_viewer.swf
++	rm -f $(DESTDIR)$(pkgdatadir)/swfs/default_loader.swf -o -L $(DESTDIR)$(pkgdatadir)/swfs/default_loader.swf
++	$(LN_S) $(DESTDIR)$(pkgdatadir)/swfs/tessel_loader.swf $(DESTDIR)$(pkgdatadir)/swfs/default_loader.swf
+ 		
+ uninstall:
+-	$(UNINSTALL_DATA) $(pkgdatadir)/swfs/simple_viewer.swf
+-	$(UNINSTALL_DATA) $(pkgdatadir)/swfs/keyboard_viewer.swf
+-	$(UNINSTALL_DATA) $(pkgdatadir)/swfs/PreLoaderTemplate.swf
+-	$(UNINSTALL_DATA) $(pkgdatadir)/swfs/tessel_loader.swf
+-	$(UNINSTALL_DATA) $(pkgdatadir)/swfs/swft_loader.swf
+-	$(UNINSTALL_DATA) $(pkgdatadir)/swfs/default_viewer.swf
+-	$(UNINSTALL_DATA) $(pkgdatadir)/swfs/default_loader.swf
++	$(UNINSTALL_DATA) $(DESTDIR)$(pkgdatadir)/swfs/simple_viewer.swf
++	$(UNINSTALL_DATA) $(DESTDIR)$(pkgdatadir)/swfs/keyboard_viewer.swf
++	$(UNINSTALL_DATA) $(DESTDIR)$(pkgdatadir)/swfs/PreLoaderTemplate.swf
++	$(UNINSTALL_DATA) $(DESTDIR)$(pkgdatadir)/swfs/tessel_loader.swf
++	$(UNINSTALL_DATA) $(DESTDIR)$(pkgdatadir)/swfs/swft_loader.swf
++	$(UNINSTALL_DATA) $(DESTDIR)$(pkgdatadir)/swfs/default_viewer.swf
++	$(UNINSTALL_DATA) $(DESTDIR)$(pkgdatadir)/swfs/default_loader.swf
+ 
+ clean: 
+ 	rm -f *.o *.obj *.lo *.a *.lib *.la gmon.out 

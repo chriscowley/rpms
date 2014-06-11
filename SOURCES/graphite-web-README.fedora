@@ -1,0 +1,7 @@
+=========== README.fedora ===========
+
+You must first run a syncdb to configure the webapp:
+
+# python /usr/lib/python2.6/site-packages/graphite/manage.py syncdb
+
+If you are using SELinux, install the selinux subpackage.

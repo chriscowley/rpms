@@ -1,0 +1,4 @@
+== SELinux Support ==
+The graphite-web-selinux package ensures the proper context for files on
+a system that needs SELinux labeling. As SELinux is not a requirement,
+this needs to be in a subpackage.
